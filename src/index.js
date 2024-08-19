@@ -51,7 +51,6 @@ const mainMenu = async () => {
             const newDepartment = await addDepartment(departmentAnswer.name);
             console.log(`Added new department: ${newDepartment.name}`);
             break;
-            break;
 
         case 'Add a role':
             const roleAnswers = await inquirer.prompt([
