@@ -1,9 +1,9 @@
-import pool from './connection';
+import pool from './connection.js';
 
 //function to getDepartments
 
 export const getDepartments = async () => {
-    const results = await pool.query ('SELECT * FROM department');
+    const results = await pool.query('SELECT * FROM department');
     return results.rows;
 }
 
@@ -11,7 +11,11 @@ export const getDepartments = async () => {
 //function to getRoles
 
 export const getRoles = async () => {
-    const results = await pool.query ('SELECT role.id, role.title, department.name AS department, role.salary FROM role JOIN department ON role.department_id = deparment.id');
+    const results = await pool.query(`
+        SELECT role.id, role.title, department.name AS department, role.salary 
+        FROM role 
+        JOIN department ON role.department_id = department.id
+    `);
     return results.rows;
 };
 
@@ -20,7 +24,7 @@ export const getRoles = async () => {
 //function to getEmployees
 //select employee data, join with role and dept
 export const getEmployees = async () => {
-    const results = await pool.query( `SELECT employee.id, employee.first_name, employee.last_name, role.title, 
+    const results = await pool.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title, 
         department.name AS department, role.salary, 
         CONCAT(manager.first_name, ' ', manager.last_name) AS manager 
 FROM employee 
@@ -38,7 +42,7 @@ export const addDepartment = async (name) => {
         'INSERT INTO department (name) VALUES ($1) RETURNING *',
         [name]
     );
-    return results.rows[0]; 
+    return results.rows[0];
 };
 
 //function to addRole
