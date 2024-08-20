@@ -1,8 +1,10 @@
-//import functions from queries file
-import { getDepartments, getRoles, getEmployees } from './queries.js';
+//import functions from queries file//
+import { getDepartments, getRoles, getEmployees, addDepartment, addRole, addEmployee, updateEmployeeRole } from './queries.js';
 
-//import inquirer for prompts
+//import inquirer for prompts//
 import inquirer from 'inquirer';
+
+//create main menu//
 
 const mainMenu = async () => {
     const answers = await inquirer.prompt([
@@ -24,22 +26,27 @@ const mainMenu = async () => {
     ]);
 
 
+    //create switch statement//
+
     switch (answers.action) {
         case 'View all departments':
             const departments = await getDepartments();
             console.log("You selected 'View all departments'");
             console.table(departments);
             break;
+
         case 'View all roles':
             const roles = await getRoles();
             console.log("You selected 'View all roles'");
             console.table(roles);
             break;
+
         case 'View all employees':
             const employees = await getEmployees();
             console.log("You selected 'View all employees'");
             console.table(employees);
             break;
+
         case 'Add a department':
             const departmentAnswer = await inquirer.prompt([
                 {
@@ -48,8 +55,17 @@ const mainMenu = async () => {
                     message: 'Enter the name of the new department:',
                 },
             ]);
-            const newDepartment = await addDepartment(departmentAnswer.name);
-            console.log(`Added new department: ${newDepartment.name}`);
+
+            try {
+                const newDepartment = await addDepartment(departmentAnswer.name);
+                if (newDepartment) {
+                    console.log(`Added new department: ${newDepartment.name}`);
+                } else {
+                    console.log('Department was not added because it already exists.');
+                }
+            } catch (err) {
+                console.error('Error adding department:', err);
+            }
             break;
 
         case 'Add a role':

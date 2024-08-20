@@ -38,17 +38,37 @@ FROM employee
 //function to addDeparments
 
 export const addDepartment = async (name) => {
-    const results = await pool.query(
-        'INSERT INTO department (name) VALUES ($1) RETURNING *',
-        [name]
-    );
-    return results.rows[0];
+    try {
+        // Checking for duplicate departments before added
+
+        const checkQuery = 'SELECT * FROM department WHERE name = $1';
+        const checkResult = await pool.query(checkQuery, [name]);
+
+        if (checkResult.rows.length > 0) {
+            console.log(`The department '${name}' already exists.`);
+            return null;
+        }
+
+        // Insert the new department
+
+        const results = await pool.query(
+            'INSERT INTO department (name) VALUES ($1) RETURNING *',
+            [name]
+        );
+        return results.rows[0];
+    } catch (err) {
+        console.error('Error adding department:', err);
+        throw err;
+    }
 };
 
 //function to addRole
 
 export const addRole = async (title, salary, department_id) => {
-    const results = await pool.query('INSERT into role (title, salary, department_id VALUES [$1, $2, $3] RETURNING *');
+    const results = await pool.query(
+        'INSERT INTO role (title, salary, department_id) VALUES ($1, $2, $3) RETURNING *',
+        [title, salary, department_id]
+    );
     return results.rows[0];
 };
 
@@ -56,15 +76,21 @@ export const addRole = async (title, salary, department_id) => {
 
 //function to addEmployee
 
-export const addEmployee = async (first_name, last_name, role_id, manager_id) => {
-    const results = await pool.query('INSERT into employee (first_name, last_name, role_id, manager_id VALUES [$1, $2, $3, $4] RETURNING *');
+export const addEmployee = async (first_name, last_name, role_id, manager_id = null) => {
+    const results = await pool.query(
+        'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4) RETURNING *',
+        [first_name, last_name, role_id, manager_id]
+    );
     return results.rows[0];
 };
 
 //function to updateEmployeeRole
 
-export const updateEmployeeRole = async (title, salary, department_id) => {
-    const results = await pool.query('UPDATE employee SET role_id = $1 WHERE id = $2 RETURNING *, [new_role_id, employee_id]');
+export const updateEmployeeRole = async (role_id, employee_id) => {
+    const results = await pool.query(
+        'UPDATE employee SET role_id = $1 WHERE id = $2 RETURNING *',
+        [role_id, employee_id]
+    );
     return results.rows[0];
 };
 
