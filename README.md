@@ -23,6 +23,10 @@ To install this project, start by cloning the repository to your local machine. 
 
 To use this project, begin by running the application with the command node index.js. Follow the on-screen prompts to view departments, roles, and employees, or to add and update entries in the database. When you're finished, simply select the "Exit" option to close the application.
 
+Walk through example listed below: 
+
+https://youtu.be/DQIudNls7yM
+
 
 ![alt text](image.png)
 
